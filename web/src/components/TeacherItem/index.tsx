@@ -1,35 +1,56 @@
 import React from 'react';
+import api from '../../services/api';
 
 import whatsappIcon from '../../assets/images/icons/whatsapp.svg';
 
 import './styles.css';
 
-function TeacherItem() {
+export interface Teacher {
+  id: number,
+  subject: string,
+  cost: number,
+  name: string,
+  avatar: string,
+  whatsapp: string,
+  bio: string
+}
+
+interface TeacherItemProps {
+  teacher: Teacher;
+}
+
+const TeacherItem: React.FC<TeacherItemProps> = ({ teacher }) => {
+  function createNewConnection() {
+    api.post('connections', {
+      user_id: teacher.id
+    });
+  }
+  
   return (
     <article className="teacher-item">
       <header>
-        <img src="https://avatars3.githubusercontent.com/u/32201545?s=460&u=53d67b995dd3c41a1abf3baddfe8aa4f8d839e25&v=4" alt="Iuri Dias"/>
+        <img src={teacher.avatar} alt={teacher.name}/>
         <div>
-          <strong>Iuri Dias</strong>
-          <span>Estruturas de Dados</span>
+          <strong>{teacher.name}</strong>
+          <span>{teacher.subject}</span>
         </div>
       </header>
       
-      <p>
-        Estudante de Engenharia da Computação, desenvolvedor fullstack.
-        <br/><br/>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas imperdiet ut eros at posuere. In a mauris nec sem viverra interdum quis et quam. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.
-      </p>
+      <p>{teacher.bio}</p>
       
       <footer>
         <p>
           Preço/hora
-          <strong>R$ 150,00</strong>
+          <strong>R$ {teacher.cost}</strong>
         </p>
-        <button type="button">
+        <a 
+          target="_blank"
+          onClick={createNewConnection}
+          href={`https://wa.me/${teacher.whatsapp}`}
+        >
           <img src={whatsappIcon} alt="Whatsapp"/>
           Entrar em contato
-        </button>
+        </a>
       </footer>
     </article>
   );
